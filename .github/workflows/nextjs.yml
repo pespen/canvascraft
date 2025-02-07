@@ -17,7 +17,6 @@ concurrency:
 
 jobs:
   build:
-    name: Build and Deploy - ${{ github.event.pull_request.title || github.ref_name }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,9 +25,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
+          cache: npm
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -38,20 +35,19 @@ jobs:
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
       - name: Install dependencies
-        run: pnpm install
+        run: npm ci
       - name: Build with Next.js
-        run: pnpm next build
+        run: npx next build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
 
   deploy:
-    name: Deploy to GitHub Pages - ${{ github.event.pull_request.title || github.ref_name }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
