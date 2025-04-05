@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Canvas from "./components/Canvas";
-import ControlPanel from "./components/ControlPanel";
-import Spinner from "./components/Spinner";
+import ControlPanel from "./components/control-panel";
 import Image from "next/image";
-import type { CanvasSettings } from "./components/ControlPanel";
+import type { CanvasSettings } from "./components/control-panel";
+import Canvas from "./components/canvas";
+import Spinner from "./components/spinner";
 
 export default function Home() {
   const [settings, setSettings] = useState<CanvasSettings>({
