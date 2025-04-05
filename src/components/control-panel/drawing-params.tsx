@@ -1,6 +1,6 @@
 "use client";
 
-import { CanvasSettings } from "../../../utils/types";
+import { CanvasSettings } from "../../utils/types";
 
 // Helper function to render parameters for each drawing method
 export const DrawingParameters = ({

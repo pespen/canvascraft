@@ -6,8 +6,8 @@ import {
   sizePresets,
   MIN_CANVAS_SIZE,
   MAX_CANVAS_SIZE,
-} from "../../../utils/types";
-import { getDefaultParamsForMethod } from "../../../utils/drawing";
+} from "../../utils/types";
+import { getDefaultParamsForMethod } from "../../utils/drawing";
 import DrawingParameters from "./drawing-params";
 
 const ControlPanel = ({
