@@ -15,8 +15,7 @@ export interface CanvasSettings {
       | "fibonacci"
       | "lissajous"
       | "rose"
-      | "phyllotaxis"
-      | "custom";
+      | "phyllotaxis";
     params: Record<string, number | string>;
   };
 }

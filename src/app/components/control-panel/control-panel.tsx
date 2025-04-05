@@ -17,6 +17,7 @@ const ControlPanel = ({
 }: ControlPanelProps) => {
   const [customWidth, setCustomWidth] = useState("");
   const [customHeight, setCustomHeight] = useState("");
+  const [showCustomSize, setShowCustomSize] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -27,10 +28,21 @@ const ControlPanel = ({
   };
 
   const handleSizePresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedIndex = e.target.selectedIndex;
-    if (selectedIndex === 0) return; // "Select a preset" option
+    const selectedValue = e.target.value;
 
-    const preset = sizePresets[selectedIndex - 1];
+    if (selectedValue === "custom") {
+      setCustomWidth(settings.canvasWidth.toString());
+      setCustomHeight(settings.canvasHeight.toString());
+      setShowCustomSize(true);
+      return;
+    }
+
+    setShowCustomSize(false);
+
+    const selectedIndex = parseInt(selectedValue);
+    if (isNaN(selectedIndex)) return;
+
+    const preset = sizePresets[selectedIndex];
     onSettingsChange({
       ...settings,
       canvasWidth: preset.width,
@@ -69,61 +81,60 @@ const ControlPanel = ({
     });
   };
 
+  // Determine which size preset is currently selected
+  const getCurrentSizePreset = () => {
+    if (showCustomSize) return "custom";
+
+    const matchingPresetIndex = sizePresets.findIndex(
+      (preset) =>
+        preset.width === settings.canvasWidth &&
+        preset.height === settings.canvasHeight
+    );
+
+    return matchingPresetIndex !== -1 ? matchingPresetIndex.toString() : "";
+  };
+
   return (
     <div className="p-4 space-y-4">
-      {/* Canvas Size Section */}
-      <div className="mb-4">
-        <label className="block mb-1 font-medium text-xs">Canvas Size</label>
+      {/* Drawing Method Section - Moved to the top */}
+      <div className="mb-3">
+        <label className="block mb-1 font-medium text-xs">Drawing Method</label>
         <select
+          name="drawingMethodType"
+          value={settings.drawingMethod?.type || "spiral"}
+          onChange={(e) => {
+            const methodType = e.target.value as NonNullable<
+              typeof settings.drawingMethod
+            >["type"];
+            onSettingsChange({
+              ...settings,
+              drawingMethod: {
+                type: methodType,
+                params: getDefaultParamsForMethod(methodType),
+              },
+            });
+          }}
           className="w-full p-1 border border-gray-300 rounded text-xs mb-2"
-          onChange={handleSizePresetChange}
-          value=""
         >
-          <option value="">Select a preset</option>
-          {sizePresets.map((preset, i) => (
-            <option key={i} value={i}>
-              {preset.name} ({preset.width}×{preset.height})
-            </option>
-          ))}
+          <option value="spiral">Spiral</option>
+          <option value="circular">Circular Arrangement</option>
+          <option value="grid">Grid Pattern</option>
+          <option value="sine">Sine Wave</option>
+          <option value="fibonacci">Fibonacci Spiral</option>
+          <option value="lissajous">Lissajous Curve</option>
+          <option value="rose">Rose Curve</option>
+          <option value="phyllotaxis">Phyllotaxis</option>
         </select>
 
-        <div className="flex space-x-2 mb-2">
-          <div>
-            <label className="block mb-1 text-xs">Width (px)</label>
-            <input
-              type="number"
-              min={MIN_CANVAS_SIZE}
-              max={MAX_CANVAS_SIZE}
-              value={customWidth}
-              onChange={(e) => setCustomWidth(e.target.value)}
-              className="w-full p-1 border border-gray-300 rounded text-xs"
-              placeholder={settings.canvasWidth.toString()}
+        {settings.drawingMethod && (
+          <div className="border rounded p-2 bg-gray-50">
+            <DrawingParameters
+              drawingMethod={settings.drawingMethod}
+              onSettingsChange={onSettingsChange}
+              settings={settings}
             />
           </div>
-          <div>
-            <label className="block mb-1 text-xs">Height (px)</label>
-            <input
-              type="number"
-              min={MIN_CANVAS_SIZE}
-              max={MAX_CANVAS_SIZE}
-              value={customHeight}
-              onChange={(e) => setCustomHeight(e.target.value)}
-              className="w-full p-1 border border-gray-300 rounded text-xs"
-              placeholder={settings.canvasHeight.toString()}
-            />
-          </div>
-        </div>
-
-        <button
-          onClick={applyCustomSize}
-          className="w-full p-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
-        >
-          Apply Custom Size
-        </button>
-
-        <div className="text-right text-xs mt-1 text-gray-500">
-          Current: {settings.canvasWidth}×{settings.canvasHeight}
-        </div>
+        )}
       </div>
 
       {/* Shape Section */}
@@ -198,44 +209,61 @@ const ControlPanel = ({
         </div>
       </div>
 
-      {/* Drawing Method Section */}
-      <div className="mb-3">
-        <label className="block mb-1 font-medium text-xs">Drawing Method</label>
+      {/* Canvas Size Section - Moved to the bottom */}
+      <div className="mb-4">
+        <label className="block mb-1 font-medium text-xs">Canvas Size</label>
         <select
-          name="drawingMethodType"
-          value={settings.drawingMethod?.type || "spiral"}
-          onChange={(e) => {
-            const methodType = e.target.value as NonNullable<
-              typeof settings.drawingMethod
-            >["type"];
-            onSettingsChange({
-              ...settings,
-              drawingMethod: {
-                type: methodType,
-                params: getDefaultParamsForMethod(methodType),
-              },
-            });
-          }}
           className="w-full p-1 border border-gray-300 rounded text-xs mb-2"
+          onChange={handleSizePresetChange}
+          value={getCurrentSizePreset()}
         >
-          <option value="spiral">Spiral</option>
-          <option value="circular">Circular Arrangement</option>
-          <option value="grid">Grid Pattern</option>
-          <option value="sine">Sine Wave</option>
-          <option value="fibonacci">Fibonacci Spiral</option>
-          <option value="lissajous">Lissajous Curve</option>
-          <option value="rose">Rose Curve</option>
-          <option value="phyllotaxis">Phyllotaxis</option>
+          <option value="" disabled>
+            Select a preset
+          </option>
+          {sizePresets.map((preset, i) => (
+            <option key={i} value={i.toString()}>
+              {preset.name} ({preset.width}×{preset.height})
+            </option>
+          ))}
+          <option value="custom">Custom</option>
         </select>
 
-        {settings.drawingMethod && (
-          <div className="border rounded p-2 bg-gray-50">
-            <DrawingParameters
-              drawingMethod={settings.drawingMethod}
-              onSettingsChange={onSettingsChange}
-              settings={settings}
-            />
-          </div>
+        {showCustomSize && (
+          <>
+            <div className="flex space-x-2 mb-2">
+              <div>
+                <label className="block mb-1 text-xs">Width (px)</label>
+                <input
+                  type="number"
+                  min={MIN_CANVAS_SIZE}
+                  max={MAX_CANVAS_SIZE}
+                  value={customWidth}
+                  onChange={(e) => setCustomWidth(e.target.value)}
+                  className="w-full p-1 border border-gray-300 rounded text-xs"
+                  placeholder={settings.canvasWidth.toString()}
+                />
+              </div>
+              <div>
+                <label className="block mb-1 text-xs">Height (px)</label>
+                <input
+                  type="number"
+                  min={MIN_CANVAS_SIZE}
+                  max={MAX_CANVAS_SIZE}
+                  value={customHeight}
+                  onChange={(e) => setCustomHeight(e.target.value)}
+                  className="w-full p-1 border border-gray-300 rounded text-xs"
+                  placeholder={settings.canvasHeight.toString()}
+                />
+              </div>
+            </div>
+
+            <button
+              onClick={applyCustomSize}
+              className="w-full p-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600"
+            >
+              Apply Custom Size
+            </button>
+          </>
         )}
       </div>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import ControlPanel from "./components/control-panel";
 import Image from "next/image";
-import type { CanvasSettings } from "./components/control-panel";
+import type { CanvasSettings } from "./utils/types";
 import Canvas from "./components/canvas";
 import Spinner from "./components/spinner";
 
