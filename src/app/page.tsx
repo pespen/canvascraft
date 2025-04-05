@@ -81,7 +81,7 @@ export default function Home() {
       window.addEventListener("resize", updateSizes);
       return () => window.removeEventListener("resize", updateSizes);
     }
-  }, [settings.canvasWidth, settings.canvasHeight, isMobile]);
+  }, [settings.canvasWidth, settings.canvasHeight, isMobile, sidebarOpen]);
 
   const handleExport = () => {
     const canvas = document.querySelector("canvas");
