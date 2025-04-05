@@ -36,15 +36,19 @@ export const createSpiralPattern = (
       x,
       y,
       size: baseSize + (i / count) * sizeVariation,
-      // For lines, connect to the next point
-      ...(shape === "lines" && i < count - 1
+      // For lines, connect to the next point (spirals typically don't close back to first point)
+      ...(shape === "lines"
         ? {
             endX:
-              centerX +
-              spacing * ((i + 1) * expansion) * Math.cos((i + 1) * rotation),
+              i < count - 1
+                ? centerX +
+                  spacing * ((i + 1) * expansion) * Math.cos((i + 1) * rotation)
+                : x, // For spirals, we don't connect back to first point as they're not closed curves
             endY:
-              centerY +
-              spacing * ((i + 1) * expansion) * Math.sin((i + 1) * rotation),
+              i < count - 1
+                ? centerY +
+                  spacing * ((i + 1) * expansion) * Math.sin((i + 1) * rotation)
+                : y, // For spirals, we don't connect back to first point as they're not closed curves
           }
         : {}),
     });

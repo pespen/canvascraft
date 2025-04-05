@@ -33,23 +33,29 @@ export const createRosePattern = (
       x,
       y,
       size: 6 + (i / count) * 6,
-      // For lines, connect to the next point
-      ...(shape === "lines" && i < count - 1
+      // For lines, connect to the next point or back to first point if it's the last
+      ...(shape === "lines"
         ? {
             endX:
-              centerX +
-              ((scale *
-                (a * Math.cos(k * ((i + 1) * ((2 * Math.PI * n) / count))) +
-                  b)) /
-                (a + b)) *
-                Math.cos((i + 1) * ((2 * Math.PI * n) / count)),
+              i < count - 1
+                ? centerX +
+                  ((scale *
+                    (a * Math.cos(k * ((i + 1) * ((2 * Math.PI * n) / count))) +
+                      b)) /
+                    (a + b)) *
+                    Math.cos((i + 1) * ((2 * Math.PI * n) / count))
+                : centerX +
+                  ((scale * (a * Math.cos(k * 0) + b)) / (a + b)) * Math.cos(0), // Connect back to first point
             endY:
-              centerY +
-              ((scale *
-                (a * Math.cos(k * ((i + 1) * ((2 * Math.PI * n) / count))) +
-                  b)) /
-                (a + b)) *
-                Math.sin((i + 1) * ((2 * Math.PI * n) / count)),
+              i < count - 1
+                ? centerY +
+                  ((scale *
+                    (a * Math.cos(k * ((i + 1) * ((2 * Math.PI * n) / count))) +
+                      b)) /
+                    (a + b)) *
+                    Math.sin((i + 1) * ((2 * Math.PI * n) / count))
+                : centerY +
+                  ((scale * (a * Math.cos(k * 0) + b)) / (a + b)) * Math.sin(0), // Connect back to first point
           }
         : {}),
     });

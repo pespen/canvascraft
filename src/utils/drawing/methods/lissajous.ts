@@ -30,15 +30,20 @@ export const createLissajousPattern = (
       x,
       y,
       size: 8,
-      // For lines, connect to the next point
-      ...(shape === "lines" && i < count - 1
+      // For lines, connect to the next point or back to first for the last point
+      ...(shape === "lines"
         ? {
             endX:
-              centerX +
-              scale * Math.sin(a * ((i + 1) * ((2 * Math.PI) / count)) + delta),
+              i < count - 1
+                ? centerX +
+                  scale *
+                    Math.sin(a * ((i + 1) * ((2 * Math.PI) / count)) + delta)
+                : centerX + scale * Math.sin(a * 0 + delta), // Connect back to first point
             endY:
-              centerY +
-              scale * Math.sin(b * ((i + 1) * ((2 * Math.PI) / count))),
+              i < count - 1
+                ? centerY +
+                  scale * Math.sin(b * ((i + 1) * ((2 * Math.PI) / count)))
+                : centerY + scale * Math.sin(b * 0), // Connect back to first point
           }
         : {}),
     });

@@ -37,17 +37,25 @@ export const createCircularPattern = (
       y,
       size:
         baseSize + (radiusVariation > 0 ? Math.random() * sizeVariation : 0),
-      // For lines, connect to the next point
-      ...(shape === "lines" && i < count - 1
+      // For lines, connect to the next point or back to first for the last point
+      ...(shape === "lines"
         ? {
             endX:
-              centerX +
-              currentRadius *
-                Math.cos(angleOffset + (i + 1) * ((2 * Math.PI) / count)),
+              i < count - 1
+                ? centerX +
+                  currentRadius *
+                    Math.cos(angleOffset + (i + 1) * ((2 * Math.PI) / count))
+                : centerX +
+                  currentRadius *
+                    Math.cos(angleOffset + 0 * ((2 * Math.PI) / count)), // Connect back to first point
             endY:
-              centerY +
-              currentRadius *
-                Math.sin(angleOffset + (i + 1) * ((2 * Math.PI) / count)),
+              i < count - 1
+                ? centerY +
+                  currentRadius *
+                    Math.sin(angleOffset + (i + 1) * ((2 * Math.PI) / count))
+                : centerY +
+                  currentRadius *
+                    Math.sin(angleOffset + 0 * ((2 * Math.PI) / count)), // Connect back to first point
           }
         : {}),
     });
