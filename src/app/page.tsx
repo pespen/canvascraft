@@ -5,6 +5,7 @@ import type { CanvasSettings } from "../utils/types";
 import Canvas from "@/components/canvas";
 import ControlPanel from "@/components/control-panel";
 import Spinner from "@/components/spinner";
+import Image from "next/image";
 
 export default function Home() {
   const [settings, setSettings] = useState<CanvasSettings>({
@@ -156,8 +157,7 @@ export default function Home() {
               >
                 Canvascraft
               </h1>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="./canvascraft_logo.png"
                 alt="Canvascraft Logo"
                 width={40}
