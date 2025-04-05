@@ -64,7 +64,7 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
     );
 
     // Target drawing time of 5 seconds (5000ms)
-    const targetDrawTime = 5000;
+    const targetDrawTime = 2500;
     // Target 60 frames per second
     const targetFrameRate = 60;
     // Total frames in 5 seconds
