@@ -26,7 +26,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
       x: number;
       y: number;
       size: number;
-      color: string;
       endX?: number;
       endY?: number;
     }> => {
@@ -34,7 +33,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
         x: number;
         y: number;
         size: number;
-        color: string;
         endX?: number;
         endY?: number;
       }> = [];
@@ -61,7 +59,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
               x: (col + 1) * cellWidth + offsetX,
               y: (row + 1) * cellHeight + offsetY,
               size: 10 + Math.random() * 10,
-              color: settings.color,
               // For lines, connect to the next point
               ...(settings.shape === "lines" && col < columns - 1
                 ? {
@@ -89,7 +86,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 8,
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -124,7 +120,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 6 + (i / count) * 10,
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -165,7 +160,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 8 + (radiusVariation > 0 ? Math.random() * 8 : 0),
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -186,7 +180,7 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
       // Fibonacci spiral (Golden ratio)
       else if (methodType === "fibonacci") {
         const scale = (params.scale as number) || 5;
-        const turns = (params.turns as number) || 8;
+        const turns = (params.turns as number) || 12;
         const rotation = (params.rotation as number) || 0;
 
         const centerX = width / 2;
@@ -205,7 +199,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 4 + ratio * 12,
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -249,7 +242,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 8,
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -278,10 +270,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
         const scale = Math.min(width, height) / 3;
 
         // Create points along a rose curve
-        // Rose curve equation: r = a * cos(k * θ) + b
-        // or in parametric form:
-        // x = r * cos(θ)
-        // y = r * sin(θ)
         for (let i = 0; i < count; i++) {
           const theta = i * ((2 * Math.PI * n) / count);
           const r = (scale * (a * Math.cos(k * theta) + b)) / (a + b); // Normalized to keep within scale
@@ -293,7 +281,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 6 + (i / count) * 6,
-            color: settings.color,
             // For lines, connect to the next point
             ...(settings.shape === "lines" && i < count - 1
               ? {
@@ -347,7 +334,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
             x,
             y,
             size: 4 + 8 * Math.sqrt(i / count), // Size increases gradually
-            color: settings.color,
             // No lines for phyllotaxis as they can be messy
             ...(settings.shape === "lines" && i < count - 1 && i % 5 === 0 // Only connect every 5th point
               ? {
@@ -399,7 +385,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
                   x: pos.x,
                   y: pos.y,
                   size: pos.size || 8,
-                  color: pos.color || settings.color,
                   ...(settings.shape === "lines" && i < positions.length - 1
                     ? {
                         endX: positions[i + 1]?.x,
@@ -417,7 +402,7 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
 
       return elements;
     },
-    [width, height, settings.color, settings.shape]
+    [width, height, settings.shape, settings.color]
   );
 
   useEffect(() => {
@@ -524,7 +509,7 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [width, height, settings, generatePositions]); // Remove drawFractals from dependencies
+  }, [width, height, settings, generatePositions]);
 
   const drawElement = (
     ctx: CanvasRenderingContext2D,
@@ -532,24 +517,25 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
       x: number;
       y: number;
       size: number;
-      color: string;
       endX?: number;
       endY?: number;
     },
     shape: CanvasSettings["shape"]
   ) => {
-    ctx.fillStyle = element.color;
-    ctx.strokeStyle = element.color;
+    // Use the single color from settings
+    ctx.fillStyle = settings.color;
+    ctx.strokeStyle = settings.color;
 
     switch (shape) {
       case "circles":
+        // Draw a simple circle with the settings color
         ctx.beginPath();
         ctx.arc(element.x, element.y, element.size, 0, Math.PI * 2);
-        ctx.globalAlpha = 0.6;
         ctx.fill();
         break;
+
       case "rectangles":
-        ctx.globalAlpha = 0.6;
+        // Draw a simple rectangle with the settings color
         ctx.fillRect(
           element.x - element.size / 2,
           element.y - element.size / 2,
@@ -557,13 +543,14 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
           element.size
         );
         break;
+
       case "lines":
         if (element.endX !== undefined && element.endY !== undefined) {
+          // Draw a simple line with the settings color
           ctx.beginPath();
           ctx.moveTo(element.x, element.y);
           ctx.lineTo(element.endX, element.endY);
-          ctx.lineWidth = element.size / 5;
-          ctx.globalAlpha = 0.6;
+          ctx.lineWidth = element.size / 3;
           ctx.stroke();
         }
         break;

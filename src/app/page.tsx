@@ -11,15 +11,14 @@ export default function Home() {
   const [settings, setSettings] = useState<CanvasSettings>({
     shape: "circles" as const,
     color: "#3498db",
-    count: 100,
+    count: 250,
     canvasWidth: 842,
     canvasHeight: 595,
     drawingMethod: {
-      type: "circular",
+      type: "phyllotaxis",
       params: {
-        radius: 150,
-        radiusVariation: 0,
-        angleOffset: 0,
+        n: 1,
+        k: 2,
       },
     },
   });
