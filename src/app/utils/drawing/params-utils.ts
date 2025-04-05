@@ -34,10 +34,9 @@ export const getDefaultParamsForMethod = (
       };
     case "rose":
       return {
-        a: 1,
-        b: 1,
-        n: 2,
-        k: 1,
+        n: 1,
+        k: 6,
+        scale: 0.85,
       };
     case "phyllotaxis":
       return {

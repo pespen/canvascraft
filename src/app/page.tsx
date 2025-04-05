@@ -9,23 +9,27 @@ import Spinner from "./components/spinner";
 
 export default function Home() {
   const [settings, setSettings] = useState<CanvasSettings>({
-    shape: "circles" as const,
+    shape: "lines" as const,
     color: "#3498db",
     count: 250,
     canvasWidth: 842,
     canvasHeight: 595,
     drawingMethod: {
-      type: "spiral",
+      type: "rose",
       params: {
-        spacing: 10,
-        rotation: 0.1,
-        expansion: 0.2,
+        n: 1,
+        k: 6, // 6 petals
+        scale: 0.85,
       },
     },
   });
 
   // Track if the layout has been calculated
   const [layoutReady, setLayoutReady] = useState(false);
+  // Track sidebar state for mobile view - defaulting to open
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Track if we're on mobile screen
+  const [isMobile, setIsMobile] = useState(false);
 
   // Calculate container size for the canvas to fit within the available space
   const [containerSize, setContainerSize] = useState({
@@ -42,8 +46,13 @@ export default function Home() {
 
   useEffect(() => {
     const updateSizes = () => {
-      const sidebarWidth = 250;
-      const mainAreaWidth = window.innerWidth - sidebarWidth - 40;
+      const mobileBreakpoint = 768; // Typical tablet/mobile breakpoint
+      const currentIsMobile = window.innerWidth < mobileBreakpoint;
+      setIsMobile(currentIsMobile);
+
+      const sidebarWidth = currentIsMobile ? (sidebarOpen ? 256 : 0) : 256; // 256px = w-64
+      const mainAreaWidth =
+        window.innerWidth - (currentIsMobile ? 0 : sidebarWidth) - 40;
       const mainAreaHeight = window.innerHeight - 60;
 
       // Calculate the scale to fit the canvas within the container
@@ -58,8 +67,8 @@ export default function Home() {
 
       // Also update the placeholder size
       setPlaceholderSize({
-        width: Math.min(settings.canvasWidth, window.innerWidth - 300),
-        height: Math.min(settings.canvasHeight, window.innerHeight - 100),
+        width: Math.min(settings.canvasWidth, mainAreaWidth),
+        height: Math.min(settings.canvasHeight, mainAreaHeight),
       });
 
       setScale(newScale);
@@ -72,7 +81,7 @@ export default function Home() {
       window.addEventListener("resize", updateSizes);
       return () => window.removeEventListener("resize", updateSizes);
     }
-  }, [settings.canvasWidth, settings.canvasHeight]);
+  }, [settings.canvasWidth, settings.canvasHeight, isMobile]);
 
   const handleExport = () => {
     const canvas = document.querySelector("canvas");
@@ -86,11 +95,60 @@ export default function Home() {
     document.body.removeChild(link);
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile Toggle Button */}
+        {isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className={`fixed z-30 p-2 bg-white rounded-md shadow-md flex items-center justify-center transition-all duration-300 ${
+              sidebarOpen
+                ? "top-1/2 -translate-y-1/2 left-[248px]" // Position at right edge of sidebar, vertically centered
+                : "top-1/2 -translate-y-1/2 left-0 rounded-l-none rounded-r-md"
+            }`}
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {sidebarOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              )}
+            </svg>
+          </button>
+        )}
+
         {/* Sidebar */}
-        <div className="w-64 bg-gray-100 flex flex-col overflow-hidden">
+        <div
+          className={`bg-gray-100 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${
+            isMobile
+              ? `fixed top-0 left-0 h-full z-20 shadow-xl ${
+                  sidebarOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full"
+                }`
+              : "w-64"
+          }`}
+        >
           <div className="py-5 flex items-center justify-center">
             <div className="flex items-center">
               <h1
@@ -117,8 +175,21 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Overlay for mobile when sidebar is open */}
+        {isMobile && sidebarOpen && (
+          <div
+            className="fixed inset-0 z-10"
+            onClick={toggleSidebar}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Main Canvas Area */}
-        <div className="flex-1 flex items-center justify-center bg-gray-50 p-4 overflow-auto">
+        <div
+          className={`flex-1 flex items-center justify-center bg-gray-50 p-4 overflow-auto ${
+            isMobile ? "ml-0" : ""
+          }`}
+        >
           {layoutReady ? (
             <div
               className="relative bg-white shadow-md"
