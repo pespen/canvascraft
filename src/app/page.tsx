@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Canvas from "./components/Canvas";
 import ControlPanel from "./components/ControlPanel";
-import Presets from "./components/Presets";
 import Spinner from "./components/Spinner";
 import Image from "next/image";
 import type { CanvasSettings } from "./components/ControlPanel";
@@ -12,10 +11,17 @@ export default function Home() {
   const [settings, setSettings] = useState<CanvasSettings>({
     shape: "circles" as const,
     color: "#3498db",
-    count: 30,
-    speed: 5,
+    count: 100,
     canvasWidth: 842,
     canvasHeight: 595,
+    drawingMethod: {
+      type: "circular",
+      params: {
+        radius: 150,
+        radiusVariation: 0,
+        angleOffset: 0,
+      },
+    },
   });
 
   // Track if the layout has been calculated
@@ -94,11 +100,6 @@ export default function Home() {
               height={32}
               className="mr-2"
             />
-          </div>
-
-          <div className="p-3">
-            <h2 className="text-sm font-bold mb-2">Presets</h2>
-            <Presets onSelectPreset={setSettings} />
           </div>
 
           <div className="flex-1 overflow-auto">
