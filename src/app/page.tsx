@@ -15,10 +15,11 @@ export default function Home() {
     canvasWidth: 842,
     canvasHeight: 595,
     drawingMethod: {
-      type: "phyllotaxis",
+      type: "spiral",
       params: {
-        n: 1,
-        k: 2,
+        spacing: 10,
+        rotation: 0.1,
+        expansion: 0.2,
       },
     },
   });

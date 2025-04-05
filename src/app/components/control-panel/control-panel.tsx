@@ -203,7 +203,7 @@ const ControlPanel = ({
         <label className="block mb-1 font-medium text-xs">Drawing Method</label>
         <select
           name="drawingMethodType"
-          value={settings.drawingMethod?.type || "circular"}
+          value={settings.drawingMethod?.type || "spiral"}
           onChange={(e) => {
             const methodType = e.target.value as NonNullable<
               typeof settings.drawingMethod
@@ -218,10 +218,10 @@ const ControlPanel = ({
           }}
           className="w-full p-1 border border-gray-300 rounded text-xs mb-2"
         >
-          <option value="grid">Grid Pattern</option>
-          <option value="circular">Circular Arrangement</option>
-          <option value="sine">Sine Wave</option>
           <option value="spiral">Spiral</option>
+          <option value="circular">Circular Arrangement</option>
+          <option value="grid">Grid Pattern</option>
+          <option value="sine">Sine Wave</option>
           <option value="fibonacci">Fibonacci Spiral</option>
           <option value="lissajous">Lissajous Curve</option>
           <option value="rose">Rose Curve</option>
