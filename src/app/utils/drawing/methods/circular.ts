@@ -1,4 +1,5 @@
 import { ElementPosition } from "../../types";
+import { getSizeScaleFactor } from "../generate-positions";
 
 /**
  * Creates a circular pattern
@@ -19,6 +20,11 @@ export const createCircularPattern = (
   const centerX = width / 2;
   const centerY = height / 2;
 
+  // Get base element size with scaling based on canvas size
+  const sizeScale = getSizeScaleFactor(width, height);
+  const baseSize = 8 * sizeScale;
+  const sizeVariation = 8 * sizeScale;
+
   // Create points along a circle
   for (let i = 0; i < count; i++) {
     const angle = angleOffset + i * ((2 * Math.PI) / count);
@@ -29,7 +35,8 @@ export const createCircularPattern = (
     elements.push({
       x,
       y,
-      size: 8 + (radiusVariation > 0 ? Math.random() * 8 : 0),
+      size:
+        baseSize + (radiusVariation > 0 ? Math.random() * sizeVariation : 0),
       // For lines, connect to the next point
       ...(shape === "lines" && i < count - 1
         ? {

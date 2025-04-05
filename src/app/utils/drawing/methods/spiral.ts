@@ -1,4 +1,5 @@
 import { ElementPosition } from "../../types";
+import { getSizeScaleFactor } from "../generate-positions";
 
 /**
  * Creates a spiral pattern
@@ -19,6 +20,11 @@ export const createSpiralPattern = (
   const centerX = width / 2;
   const centerY = height / 2;
 
+  // Get base element size with some scaling based on canvas size
+  const baseSizeScale = getSizeScaleFactor(width, height);
+  const baseSize = 6 * baseSizeScale;
+  const sizeVariation = 10 * baseSizeScale;
+
   // Create points along a spiral
   for (let i = 0; i < count; i++) {
     const angle = i * rotation;
@@ -29,7 +35,7 @@ export const createSpiralPattern = (
     elements.push({
       x,
       y,
-      size: 6 + (i / count) * 10,
+      size: baseSize + (i / count) * sizeVariation,
       // For lines, connect to the next point
       ...(shape === "lines" && i < count - 1
         ? {
