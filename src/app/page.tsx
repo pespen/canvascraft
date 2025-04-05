@@ -91,15 +91,21 @@ export default function Home() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
         <div className="w-64 bg-gray-100 flex flex-col overflow-hidden">
-          <div className="p-4 flex items-center">
-            <h1 className="text-2xl font-bold mr-2">Canvascraft</h1>
-            <Image
-              src="/canvascraft_logo.png"
-              alt="Canvascraft Logo"
-              width={32}
-              height={32}
-              className="mr-2"
-            />
+          <div className="py-5 flex items-center justify-center">
+            <div className="flex items-center">
+              <h1
+                className="text-2xl font-bold mr-2"
+                style={{ fontFamily: "var(--font-miriam-libre)" }}
+              >
+                Canvascraft
+              </h1>
+              <Image
+                src="/canvascraft_logo.png"
+                alt="Canvascraft Logo"
+                width={40}
+                height={40}
+              />
+            </div>
           </div>
 
           <div className="flex-1 overflow-auto">

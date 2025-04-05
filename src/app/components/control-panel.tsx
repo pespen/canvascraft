@@ -658,8 +658,6 @@ const ControlPanel = ({
 
   return (
     <div className="p-3">
-      <h2 className="text-sm font-bold mb-3">Mathematical Drawing</h2>
-
       {/* Drawing Method Section - Now at the top */}
       <div className="mb-3">
         <label className="block mb-1 font-medium text-xs">Drawing Method</label>
