@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { CanvasSettings } from "./ControlPanel";
 
 interface CanvasProps {
@@ -14,6 +14,78 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const [isDrawing, setIsDrawing] = useState(false);
+
+  const drawFractals = useCallback(
+    (ctx: CanvasRenderingContext2D, count: number, color: string) => {
+      ctx.strokeStyle = color;
+
+      // For fractals, we'll draw them incrementally by depth
+      const drawFractalWithDelay = (depth: number) => {
+        if (depth <= 0) return;
+
+        // Clear previous drawing for clean look
+        ctx.clearRect(0, 0, width, height);
+
+        const drawBranchToDepth = (
+          x: number,
+          y: number,
+          length: number,
+          angle: number,
+          currentDepth: number,
+          maxDepth: number
+        ) => {
+          if (currentDepth > maxDepth) return;
+
+          const endX = x + length * Math.cos(angle);
+          const endY = y + length * Math.sin(angle);
+
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(endX, endY);
+          ctx.lineWidth = currentDepth;
+          ctx.globalAlpha = 0.7;
+          ctx.stroke();
+
+          // Recursive branches
+          drawBranchToDepth(
+            endX,
+            endY,
+            length * 0.7,
+            angle - 0.3,
+            currentDepth + 1,
+            maxDepth
+          );
+          drawBranchToDepth(
+            endX,
+            endY,
+            length * 0.7,
+            angle + 0.3,
+            currentDepth + 1,
+            maxDepth
+          );
+        };
+
+        // Draw fractal up to current depth
+        drawBranchToDepth(
+          width / 2,
+          height,
+          height / 4,
+          -Math.PI / 2,
+          1,
+          depth
+        );
+
+        // Schedule next depth if not complete
+        if (depth < (count > 10 ? 10 : count)) {
+          setTimeout(() => drawFractalWithDelay(depth + 1), 300);
+        }
+      };
+
+      // Start drawing fractal from depth 1
+      drawFractalWithDelay(1);
+    },
+    [width, height]
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -115,7 +187,7 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [width, height, settings]);
+  }, [width, height, settings, drawFractals]);
 
   const drawElement = (
     ctx: CanvasRenderingContext2D,
@@ -159,72 +231,6 @@ const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
         }
         break;
     }
-  };
-
-  const drawFractals = (
-    ctx: CanvasRenderingContext2D,
-    count: number,
-    color: string
-  ) => {
-    ctx.strokeStyle = color;
-
-    // For fractals, we'll draw them incrementally by depth
-    const drawFractalWithDelay = (depth: number) => {
-      if (depth <= 0) return;
-
-      // Clear previous drawing for clean look
-      ctx.clearRect(0, 0, width, height);
-
-      const drawBranchToDepth = (
-        x: number,
-        y: number,
-        length: number,
-        angle: number,
-        currentDepth: number,
-        maxDepth: number
-      ) => {
-        if (currentDepth > maxDepth) return;
-
-        const endX = x + length * Math.cos(angle);
-        const endY = y + length * Math.sin(angle);
-
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(endX, endY);
-        ctx.lineWidth = currentDepth;
-        ctx.globalAlpha = 0.7;
-        ctx.stroke();
-
-        // Recursive branches
-        drawBranchToDepth(
-          endX,
-          endY,
-          length * 0.7,
-          angle - 0.3,
-          currentDepth + 1,
-          maxDepth
-        );
-        drawBranchToDepth(
-          endX,
-          endY,
-          length * 0.7,
-          angle + 0.3,
-          currentDepth + 1,
-          maxDepth
-        );
-      };
-
-      // Draw fractal up to current depth
-      drawBranchToDepth(width / 2, height, height / 4, -Math.PI / 2, 1, depth);
-
-      // Schedule next depth if not complete
-      if (depth < (count > 10 ? 10 : count)) {
-        setTimeout(() => drawFractalWithDelay(depth + 1), 300);
-      }
-    };
-
-    // Start drawing fractal from depth 1
-    drawFractalWithDelay(1);
   };
 
   return (

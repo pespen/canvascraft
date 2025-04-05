@@ -23,10 +23,10 @@ const MAX_CANVAS_SIZE = 5000;
 
 // Canvas size presets in pixels
 const sizePresets = [
-  { name: "A4 Portrait", width: 595, height: 842 }, // A4 at 72 DPI
   { name: "A4 Landscape", width: 842, height: 595 },
-  { name: "A3 Portrait", width: 842, height: 1191 }, // A3 at 72 DPI
+  { name: "A4 Portrait", width: 595, height: 842 }, // A4 at 72 DPI
   { name: "A3 Landscape", width: 1191, height: 842 },
+  { name: "A3 Portrait", width: 842, height: 1191 }, // A3 at 72 DPI
   { name: "Square", width: 800, height: 800 },
   { name: "HD", width: 1280, height: 720 },
   { name: "4K", width: 3840, height: 2160 },

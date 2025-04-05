@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Canvas from "./components/Canvas";
 import ControlPanel from "./components/ControlPanel";
 import Presets from "./components/Presets";
+import Spinner from "./components/Spinner";
 import Image from "next/image";
 import type { CanvasSettings } from "./components/ControlPanel";
 
@@ -13,16 +14,28 @@ export default function Home() {
     color: "#3498db",
     count: 30,
     speed: 5,
-    canvasWidth: 800,
-    canvasHeight: 600,
+    canvasWidth: 842,
+    canvasHeight: 595,
   });
 
+  // Track if the layout has been calculated
+  const [layoutReady, setLayoutReady] = useState(false);
+
   // Calculate container size for the canvas to fit within the available space
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const [containerSize, setContainerSize] = useState({
+    width: settings.canvasWidth,
+    height: settings.canvasHeight,
+  });
   const [scale, setScale] = useState(1);
 
+  // Initial placeholder size for loading state
+  const [placeholderSize, setPlaceholderSize] = useState({
+    width: settings.canvasWidth,
+    height: settings.canvasHeight,
+  });
+
   useEffect(() => {
-    const updateContainerSize = () => {
+    const updateSizes = () => {
       const sidebarWidth = 250;
       const mainAreaWidth = window.innerWidth - sidebarWidth - 40;
       const mainAreaHeight = window.innerHeight - 60;
@@ -36,12 +49,23 @@ export default function Home() {
         width: settings.canvasWidth * newScale,
         height: settings.canvasHeight * newScale,
       });
+
+      // Also update the placeholder size
+      setPlaceholderSize({
+        width: Math.min(settings.canvasWidth, window.innerWidth - 300),
+        height: Math.min(settings.canvasHeight, window.innerHeight - 100),
+      });
+
       setScale(newScale);
+      setLayoutReady(true);
     };
 
-    updateContainerSize();
-    window.addEventListener("resize", updateContainerSize);
-    return () => window.removeEventListener("resize", updateContainerSize);
+    // Only run in browser
+    if (typeof window !== "undefined") {
+      updateSizes();
+      window.addEventListener("resize", updateSizes);
+      return () => window.removeEventListener("resize", updateSizes);
+    }
   }, [settings.canvasWidth, settings.canvasHeight]);
 
   const handleExport = () => {
@@ -88,25 +112,34 @@ export default function Home() {
 
         {/* Main Canvas Area */}
         <div className="flex-1 flex items-center justify-center bg-gray-50 p-4 overflow-auto">
-          <div
-            className="relative bg-white shadow-md"
-            style={{
-              width: containerSize.width,
-              height: containerSize.height,
-            }}
-          >
-            <Canvas
-              width={settings.canvasWidth}
-              height={settings.canvasHeight}
-              settings={settings}
-              scale={scale}
-            />
-            {scale < 1 && (
-              <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
-                {Math.round(scale * 100)}% of actual size
-              </div>
-            )}
-          </div>
+          {layoutReady ? (
+            <div
+              className="relative bg-white shadow-md"
+              style={{
+                width: containerSize.width,
+                height: containerSize.height,
+              }}
+            >
+              <Canvas
+                width={settings.canvasWidth}
+                height={settings.canvasHeight}
+                settings={settings}
+                scale={scale}
+              />
+              {scale < 1 && (
+                <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                  {Math.round(scale * 100)}% of actual size
+                </div>
+              )}
+            </div>
+          ) : (
+            <div
+              className="flex items-center justify-center bg-white shadow-md p-8"
+              style={placeholderSize}
+            >
+              <Spinner size={50} color={settings.color} />
+            </div>
+          )}
         </div>
       </div>
 
