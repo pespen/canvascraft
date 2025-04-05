@@ -7,7 +7,6 @@ import { createFibonacciPattern } from "./methods/fibonacci";
 import { createLissajousPattern } from "./methods/lissajous";
 import { createRosePattern } from "./methods/rose";
 import { createPhyllotaxisPattern } from "./methods/phyllotaxis";
-import { createCustomPattern } from "./methods/custom";
 
 /**
  * Factory function that creates element positions based on the selected drawing method
@@ -64,24 +63,6 @@ export const generatePositions = (
   // Phyllotaxis pattern (sunflower-like arrangement)
   else if (methodType === "phyllotaxis") {
     return createPhyllotaxisPattern(width, height, count, shape, params);
-  }
-
-  // Custom function
-  else if (methodType === "custom") {
-    try {
-      const functionBody = (params.functionBody as string) || "";
-      return createCustomPattern(
-        width,
-        height,
-        count,
-        shape,
-        color,
-        functionBody
-      );
-    } catch (error) {
-      console.error("Error in custom function:", error);
-      return [];
-    }
   }
 
   return [];

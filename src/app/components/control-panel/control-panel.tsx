@@ -226,7 +226,6 @@ const ControlPanel = ({
           <option value="lissajous">Lissajous Curve</option>
           <option value="rose">Rose Curve</option>
           <option value="phyllotaxis">Phyllotaxis</option>
-          <option value="custom">Custom Function</option>
         </select>
 
         {settings.drawingMethod && (

@@ -44,23 +44,6 @@ export const getDefaultParamsForMethod = (
         n: 1,
         k: 1,
       };
-    case "custom":
-      return {
-        functionBody: `// Return an array of positions
-// Available variables: width, height, count, color
-
-// Create your own mathematical pattern!
-// This example creates a circle of elements
-return Array.from({length: count}, (_, i) => {
-  const angle = i * (2 * Math.PI / count);
-  const radius = Math.min(width, height) / 3;
-  return {
-    x: width/2 + radius * Math.cos(angle),
-    y: height/2 + radius * Math.sin(angle),
-    size: 10 + 5 * Math.sin(i * 0.5), // Varying size
-  };
-});`,
-      };
     default:
       return {};
   }

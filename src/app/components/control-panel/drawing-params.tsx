@@ -435,36 +435,8 @@ export const DrawingParameters = ({
           </div>
         </div>
       );
-    case "custom":
-      return (
-        <div>
-          <label className="block text-xs mb-1">Custom Function</label>
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded text-xs font-mono"
-            rows={10}
-            value={(drawingMethod.params.functionBody as string) || ""}
-            onChange={(e) => updateParam("functionBody", e.target.value)}
-            spellCheck={false}
-          />
-          <div className="text-xs text-gray-500 mt-1">
-            <p>
-              Create a function that returns an array of element positions.
-              Available variables: width, height, count, color.
-            </p>
-            <p>
-              Each element should have x, y, and size properties. Example:
-              <br />
-              {`return Array.from({ length: count }, (_, i) => ({
-  x: width/2 + 100 * Math.cos(i * 0.1),
-  y: height/2 + 100 * Math.sin(i * 0.1),
-  size: 10
-}))`}
-            </p>
-          </div>
-        </div>
-      );
     default:
-      return <div className="text-xs">No parameters needed</div>;
+      return null;
   }
 };
 
