@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import type { CanvasSettings } from "../utils/types";
 import Canvas from "@/components/canvas";
 import ControlPanel from "@/components/control-panel";
@@ -157,7 +156,7 @@ export default function Home() {
               >
                 Canvascraft
               </h1>
-              <Image
+              <img
                 src="/canvascraft_logo.png"
                 alt="Canvascraft Logo"
                 width={40}
