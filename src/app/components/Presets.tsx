@@ -15,6 +15,8 @@ const presets: { name: string; settings: CanvasSettings }[] = [
       color: "#3498db",
       count: 30,
       speed: 5,
+      canvasWidth: 800,
+      canvasHeight: 600,
     },
   },
   {
@@ -24,6 +26,8 @@ const presets: { name: string; settings: CanvasSettings }[] = [
       color: "#ff00ff",
       count: 50,
       speed: 2,
+      canvasWidth: 800,
+      canvasHeight: 600,
     },
   },
   {
@@ -33,6 +37,8 @@ const presets: { name: string; settings: CanvasSettings }[] = [
       color: "#ff3300",
       count: 70,
       speed: 8,
+      canvasWidth: 800,
+      canvasHeight: 600,
     },
   },
   {
@@ -42,6 +48,8 @@ const presets: { name: string; settings: CanvasSettings }[] = [
       color: "#00cc66",
       count: 8,
       speed: 1,
+      canvasWidth: 800,
+      canvasHeight: 600,
     },
   },
   {
@@ -51,6 +59,8 @@ const presets: { name: string; settings: CanvasSettings }[] = [
       color: "#ffffff",
       count: 100,
       speed: 3,
+      canvasWidth: 800,
+      canvasHeight: 600,
     },
   },
 ];

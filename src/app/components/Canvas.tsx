@@ -7,9 +7,10 @@ interface CanvasProps {
   width: number;
   height: number;
   settings: CanvasSettings;
+  scale?: number;
 }
 
-const Canvas = ({ width, height, settings }: CanvasProps) => {
+const Canvas = ({ width, height, settings, scale = 1 }: CanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -17,6 +18,10 @@ const Canvas = ({ width, height, settings }: CanvasProps) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    // Set the actual dimensions of the canvas for high quality rendering
+    canvas.width = width;
+    canvas.height = height;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -228,7 +233,11 @@ const Canvas = ({ width, height, settings }: CanvasProps) => {
         ref={canvasRef}
         width={width}
         height={height}
-        className="border border-gray-300 rounded-md bg-white"
+        style={{
+          width: `${width * scale}px`,
+          height: `${height * scale}px`,
+        }}
+        className="border border-gray-300 bg-white"
       />
       {isDrawing && (
         <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
