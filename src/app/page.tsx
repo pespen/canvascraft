@@ -156,8 +156,9 @@ export default function Home() {
               >
                 Canvascraft
               </h1>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/canvascraft_logo.png"
+                src="./canvascraft_logo.png"
                 alt="Canvascraft Logo"
                 width={40}
                 height={40}
