@@ -1,4 +1,4 @@
-# CanvasCraft
+# Canvascraft
 
 A web application for generating creative patterns and art using HTML Canvas.
 
