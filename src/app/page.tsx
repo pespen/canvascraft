@@ -151,16 +151,10 @@ export default function Home() {
         >
           <div className="py-5 flex items-center justify-center">
             <div className="flex items-center">
-              <h1
-                className="text-2xl font-bold mr-2"
-                style={{ fontFamily: "var(--font-miriam-libre)" }}
-              >
-                Canvascraft
-              </h1>
               <Image
-                src="./canvascraft_logo.png"
+                src="./canvascraft-logo-with-text.png"
                 alt="Canvascraft Logo"
-                width={40}
+                width={200}
                 height={40}
               />
             </div>
